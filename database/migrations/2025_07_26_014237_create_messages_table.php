@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained();
-            $table->foreignIdFor(ChatGroup::class)->constrained();
+            $table->foreignIdFor(User::class)->nullable()->constrained();
+            $table->foreignIdFor(ChatGroup::class)->constrained()->cascadeOnDelete();
             $table->text('content');
             $table->timestamps();
         });
