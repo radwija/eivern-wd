@@ -1,3 +1,4 @@
+import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Message, SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
@@ -74,7 +75,8 @@ const Index = ({ messages, chat_group_id }: IndexProps) => {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <main className="flex h-screen w-full items-center justify-center px-56">
+            <main className="p-6">
+                <Heading title="Socials" />
                 <div className="w-full rounded-md border-1 shadow-md">
                     <div className="flex max-h-[80vh] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-4">
                         {messagesState.map((msg, idx) => (
