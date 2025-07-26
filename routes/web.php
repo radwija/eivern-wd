@@ -24,23 +24,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'show'
     ]);
 
+    Route::get('lost-items', function () {
+        return Inertia::render('lost-items/index');
+    })->name('lost-items.index');
+
+    Route::get('lost-items/create', function () {
+        return Inertia::render('lost-items/create');
+    })->name('lost-items.create');
+
+    Route::get('events/create', function () {
+        return Inertia::render('events/create');
+    })->name('events.create');
+
+    Route::get('studies', function () {
+        return Inertia::render('studies/index');
+    })->name('studies.index');
+    
+    Route::get('studies/create', function () {
+        return Inertia::render('studies/create');
+    })->name('studies.create');
+
+    Route::get('socials', function () {
+        return Inertia::render('socials/index');
+    })->name('socials.index');
 });
 
-Route::get('lost-items/create', function () {
-    return Inertia::render('lost-items/create');
-})->name('lost-items.create');
-
-Route::get('events/create', function () {
-    return Inertia::render('events/create');
-})->name('events.create');
-
-Route::get('studies/create', function () {
-    return Inertia::render('studies/create');
-})->name('studies.create');
-
-Route::get('socials', function () {
-    return Inertia::render('socials/index');
-})->name('socials.index');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
