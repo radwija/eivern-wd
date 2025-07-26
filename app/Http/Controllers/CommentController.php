@@ -14,6 +14,7 @@ class CommentController extends Controller
      */
     public function store(Request $request, Thread $thread)
     {
+        // dd($thread->id);
         $validatedData = $request->validate([
             'message' => 'required|string',
         ]);
@@ -22,10 +23,11 @@ class CommentController extends Controller
 
         $comment = $thread->comments()->create($validatedData);
 
-        return response()->json([
-            'message' => 'Comment created.',
-            'data' => $comment
-        ], 201);
+        // return response()->json([
+        //     'message' => 'Comment created.',
+        //     'data' => $comment
+        // ], 201);
+        return back()->with('success', 'Comment created.');
     }
 
     /**
@@ -39,6 +41,6 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        return response()->json(['message' => 'Comment deleted.']);
+        return back()->with('success', 'Comment deleted.');
     }
 }

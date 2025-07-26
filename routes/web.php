@@ -19,9 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('events', EventController::class);
     Route::resource('comments', CommentController::class)->only([
-        'store',
         'destroy',
     ]);
+    Route::post('/comments/{thread}', [CommentController::class, 'store'])->name('comments.comment');
     Route::resource('threads', ThreadController::class)->except([
         'show'
     ]);
