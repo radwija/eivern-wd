@@ -33,6 +33,12 @@ class ThreadController extends Controller
      */
     public function create(Request $request)
     {
+        if (!$request->query('category')) {
+            return redirect()->route('threads.create', [
+                'category' => ThreadCategory::STUDY->value,
+            ]);
+        }
+        
         $category = $request->query('category');
 
         abort_if(!in_array(
