@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('image');
             $table->date('start_date');
+            $table->double('price')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
         });

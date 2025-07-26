@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ThreadController;
 use App\Models\Event;
+use App\Http\Controllers\SocialController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,7 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('events', EventController::class);
     Route::resource('comments', CommentController::class)->only([
-        'store', 'destroy',
+        'store',
+        'destroy',
     ]);
     Route::resource('threads', ThreadController::class)->except([
         'show'
@@ -39,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('studies', function () {
         return Inertia::render('studies/index');
     })->name('studies.index');
-    
+
     Route::get('studies/create', function () {
         return Inertia::render('studies/create');
     })->name('studies.create');
@@ -49,6 +51,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('socials.index');
 });
 
+Route::get('lost-items/create', function () {
+    return Inertia::render('lost-items/create');
+})->name('lost-items.create');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+Route::get('events/create', function () {
+    return Inertia::render('events/create');
+})->name('events.create');
+
+Route::get('studies/create', function () {
+    return Inertia::render('studies/create');
+})->name('studies.create');
+
+Route::get('socials', [SocialController::class, 'index'])->name('socials.index');
+Route::post('socials', [SocialController::class, 'store'])->name('socials.store');
+
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
