@@ -17,9 +17,11 @@ export interface NavGroup {
 
 export interface NavItem {
     title: string;
-    href: string;
+    href?: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    roles?: string[];
+    children?: NavItem[];
 }
 
 export interface SharedData {
@@ -31,6 +33,10 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+interface UserRole {
+    name: string;
+}
+
 export interface User {
     id: number;
     name: string;
@@ -39,5 +45,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    role: string | null;
     [key: string]: unknown; // This allows for additional properties...
 }
