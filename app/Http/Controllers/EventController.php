@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class EventController extends Controller
 {
@@ -12,7 +15,14 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Event::where('start_date', '>=', now()->toDateString())
+            ->orderBy('start_date', 'asc')
+            // ->paginate(15)
+            ->get();
+
+        return response()->json([
+            'events' => $events,
+        ]);
     }
 
     /**
@@ -20,7 +30,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('events/create');
     }
 
     /**
@@ -28,7 +38,25 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'image'       => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'start_date'  => 'required|date|after_or_equal:today',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        $imagePath = $request->file('image')->store('public/events');
+
+        $validatedData['image'] = $imagePath;
+        $validatedData['organizer_id'] = Auth::id();
+
+        $event = Event::create($validatedData);
+
+        return response()->json([
+            'message' => 'Event Created.',
+            'data' => $event,
+        ], 201);
     }
 
     /**
@@ -36,7 +64,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        return response()->json($event->load('organizer:id,name'));
     }
 
     /**
@@ -44,7 +72,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        return response()->json($event->load('organizer:id,name'));
     }
 
     /**
@@ -52,7 +80,29 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        if ($event->organizer_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validatedData = $request->validate([
+            'title'       => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'start_date'  => 'sometimes|required|date',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        if ($request->hasFile('image')) {
+            Storage::delete($event->image);
+            $validatedData['image'] = $request->file('image')->store('public/events');
+        }
+
+        $event->update($validatedData);
+
+        return response()->json([
+            'message' => 'Event updated.',
+            'data' => $event
+        ]);
     }
 
     /**
@@ -60,6 +110,13 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        if($event->organizer_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        Storage::delete($event->image);
+        $event->delete();
+
+        return response()->json(['message' => 'Event deleted.']);
     }
 }
