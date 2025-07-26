@@ -1,8 +1,10 @@
 import { Textarea } from '@/components/buttons/text-area';
 import FormField from '@/components/form-field/form-field';
+import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
 import { Head, router, useForm } from '@inertiajs/react';
 import { UploadCloud } from 'lucide-react';
 import { FormEventHandler, useRef, useState } from 'react';
@@ -93,9 +95,13 @@ const Create = () => {
     };
 
     return (
-        <main>
+        <AppLayout>
             <Head title="Create Lost Item" />
-            <div className="flex h-screen items-center justify-center">
+            <div className="p-6">
+                <Heading title={'Report Lost Items'}/>
+                <div className='border-1 shadow-md rounded-md p-6'>
+
+                
                 <form onSubmit={handleSubmit}>
                     <h1 className="text-2xl font-bold">Create Lost Item Page</h1>
                     <input type="hidden" id="category" value={'lost-items'} />
@@ -170,7 +176,7 @@ const Create = () => {
                             </div>
                         </div>
                     )}
-                    <div className="col-span-2 space-x-4 text-end">
+                    <div className="col-span-2 space-x-4 text-end mt-4">
                         {/* <LinkButton href={route('event-hilight-index')} variant="outline" size="lg">
                             Back
                         </LinkButton> */}
@@ -179,8 +185,9 @@ const Create = () => {
                         </Button>
                     </div>
                 </form>
+                </div>
             </div>
-        </main>
+        </AppLayout>
     );
 };
 

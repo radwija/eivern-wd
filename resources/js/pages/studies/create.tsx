@@ -1,74 +1,74 @@
 import { Textarea } from '@/components/buttons/text-area';
 import FormField from '@/components/form-field/form-field';
-import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Head, useForm } from '@inertiajs/react';
-import { Trash2, UploadCloud } from 'lucide-react';
-import { useRef, useState } from 'react';
+import React, { FormEvent } from 'react'; // Impor yang tidak perlu dihapus
 
-interface StudiesProps {
+// Tipe data untuk form disesuaikan
+interface ThreadFormData {
     title: string;
     description: string;
     phone_number: string;
-    image: string;
+    category: string;
 }
 
 const Create = () => {
-    const { data, setData, post, errors, reset } = useForm<Required<StudiesProps>>({
+    // State useForm disederhanakan, dan 'processing' ditambahkan
+    const { data, setData, post, errors, processing } = useForm<ThreadFormData>({
         title: '',
         description: '',
         phone_number: '',
-        image: '',
-        category: 'study',
+        category: 'study', // Kategori di-hardcode sesuai kode asli Anda
     });
 
-    const [file, setFile] = useState<File | null>(null);
-    const [fileName, setFileName] = useState<string>('');
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [selectedImage, setSelectedImage] = useState('');
-
-    const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    post(route('threads.store'));
-};
+    // Fungsi untuk submit form
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        post(route('threads.store'));
+    };
 
     return (
         <main>
-            <Head title="Create Lost Item" />
-            <div className="flex h-screen items-center justify-center">
-                <form onSubmit={handleSubmit} >
-                    <h1 className="text-2xl font-bold">Create Study Thread</h1>
-            
-                    <FormField
-                        type="text"
-                        placeholder="Input the title"
-                        id="title"
-                        required
-                        label="Title"
-                        error={errors.title}
-                        onChange={(e) => setData('title', e.target.value)}
-                    />
-                    <div className="space-y-2">
-                        <Label htmlFor="reason">description</Label>
-                        <Textarea
-                            placeholder={'Type your description...'}
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
+            <Head title="Create Study Thread" />
+            {/* Latar belakang abu-abu untuk kontras */}
+            <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-neutral-950">
+                {/* Di sini kita buat tampilan seperti kartu menggunakan div dan Tailwind */}
+                <div className="w-full max-w-lg rounded-lg bg-white p-8 shadow-md dark:bg-neutral-900">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="text-center">
+                            <h1 className="text-2xl font-bold">Create Study Thread</h1>
+                            <p className="text-gray-500 dark:text-gray-400">Fill in the details below.</p>
+                        </div>
+
+                        <FormField
+                            id="title"
+                            label="Title"
+                            type="text"
+                            value={data.title}
+                            onChange={(e) => setData('title', e.target.value)}
+                            error={errors.title}
                             required
                         />
-                    </div>
-                    <div className="col-span-2 space-x-4 text-end">
-                        {/* <LinkButton href={route('event-hilight-index')} variant="outline" size="lg">
-                            Back
-                        </LinkButton> */}
-                        <Button type="submit" size="lg">
-                            Submit
-                        </Button>
-                    </div>
-                </form>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="description">Description</Label>
+                            <Textarea
+                                id="description"
+                                value={data.description}
+                                onChange={(e) => setData('description', e.target.value)}
+                                required
+                                className="min-h-[120px]"
+                            />
+                        </div>
+
+                        <div className="flex justify-end pt-2">
+                            <Button type="submit" size="lg" disabled={processing}>
+                                {processing ? 'Submitting...' : 'Submit'}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </main>
     );
