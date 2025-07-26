@@ -34,13 +34,13 @@ const navItems: NavItem[] = [
                 title: 'Lost Items',
                 href: route('threads.index', { category: 'lost-items' }),
                 icon: Search,
-                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT],
             },
             {
                 title: 'Studies',
                 href: route('threads.index', { category: 'study' }),
                 icon: BookOpen,
-                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT],
             },
             {
                 title: 'Socials',
