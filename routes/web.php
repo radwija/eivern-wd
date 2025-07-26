@@ -34,9 +34,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('lost-items/create');
     })->name('lost-items.create');
 
+    Route::get('events', function () {
+        return Inertia::render('events/index');
+    })->name('events.index');
+
     Route::get('events/create', function () {
         return Inertia::render('events/create');
     })->name('events.create');
+
+    Route::get('show', function(){
+        return Inertia::render('events/show');
+    })->name('show');
 
     Route::get('studies', function () {
         return Inertia::render('studies/index');

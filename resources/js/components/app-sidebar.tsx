@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { SharedData, type NavItem } from '@/types';
 import { UserRoleEnum } from '@/types/enum';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, ChevronUp, LayoutGrid, Megaphone, Search } from 'lucide-react';
+import { BookOpen, Calendar, ChevronUp, LayoutGrid, Megaphone, MessageCircle, Search } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
@@ -28,35 +28,37 @@ const navItems: NavItem[] = [
     {
         title: 'Forum',
         icon: Megaphone,
-        roles: [UserRoleEnum.STUDENT, UserRoleEnum.ADMIN, UserRoleEnum.UKM],
+        roles: [UserRoleEnum.STUDENT, UserRoleEnum.ADMIN, UserRoleEnum.ORGANIZATION_UKM],
         children: [
             {
                 title: 'Lost Items',
                 href: '/lost-items',
                 icon: Search,
-                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
             {
                 title: 'Studies',
                 href: '/studies',
                 icon: BookOpen,
-                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
             {
                 title: 'Socials',
                 href: '/socials',
-                icon: BookOpen,
-                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
+                icon: MessageCircle,
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
         ],
     },
+    {
+        title: 'Events',
+        href: '/events',
+        icon: Calendar,
+        roles: [UserRoleEnum.STUDENT, UserRoleEnum.ADMIN, UserRoleEnum.ORGANIZATION_UKM],
+    },
 ];
 
-/**
- * Fungsi rekursif untuk memfilter item navigasi berdasarkan peran tunggal pengguna.
- */
 const filterNavItemsByRole = (items: NavItem[], userRole: string | null): NavItem[] => {
-    // Jika tidak ada peran, hanya tampilkan item yang tidak memerlukan peran (publik)
     if (!userRole) {
         return items.filter((item) => !item.roles);
     }
@@ -81,7 +83,6 @@ export function AppSidebar() {
     const { url } = usePage();
     const { props } = usePage<SharedData>();
 
-    // FIX: Ambil 'role' langsung sebagai string, karena backend sudah mengirimkannya sebagai string.
     const userRole = props.auth.user?.role || null;
 
     const filteredItems = useMemo(() => {
