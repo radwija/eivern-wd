@@ -6,14 +6,14 @@ enum UserRole: string
 {
     case STUDENT = 'student';
     case ADMIN = 'admin';
-    case UKM = 'ukm';
+    case ORGANIZATION_UKM = 'ORGANIZATION_UKM-ukm';
 
     public function label(): string
     {
         return match ($this) {
             self::STUDENT => 'Student',
             self::ADMIN => 'Admin',
-            self::UKM => 'UKM',
+            self::ORGANIZATION_UKM => 'ORGANIZATION_UKM/UKM',
         };
     }
 }

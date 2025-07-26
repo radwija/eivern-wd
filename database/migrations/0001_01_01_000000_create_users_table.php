@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('role', [
                 UserRole::STUDENT->value,
                 UserRole::ADMIN->value,
-                UserRole::UKM->value,
+                UserRole::ORGANIZATION_UKM->value,
             ]);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
