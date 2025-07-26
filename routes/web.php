@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SocialController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,9 +26,8 @@ Route::get('studies/create', function () {
     return Inertia::render('studies/create');
 })->name('studies.create');
 
-Route::get('socials', function () {
-    return Inertia::render('socials/index');
-})->name('socials.index');
+Route::get('socials', [SocialController::class, 'index'])->name('socials.index');
+Route::post('socials', [SocialController::class, 'store'])->name('socials.store');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
