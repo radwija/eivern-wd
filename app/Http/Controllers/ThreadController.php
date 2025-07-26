@@ -19,13 +19,24 @@ class ThreadController extends Controller
      */
     public function index(Request $request)
     {
-        $category = $request->query('category') ?? ThreadCategory::STUDY;
-        $thread = Thread::where('category', $category)
-        ->with(['images'])
+        $category = $request->query('category') ?? ThreadCategory::STUDY->value;
+        $threads = Thread::where('category', $category)
+        ->with(['images', 'user:id,name', 'comments.user:id,name'])
         ->latest()
         ->get();
 
-        return response()->json($thread);
+        // return response()->json($thread);
+        if ($category === ThreadCategory::STUDY->value) {
+            return Inertia::render('studies/index', [
+                'threads' => $threads,
+            ]);
+        } 
+        if ($category === ThreadCategory::LOST_ITEMS->value) {
+            // return response()->json($threads);
+            return Inertia::render('lost-items/index', [
+                'threads' => $threads,
+            ]);
+        }
     }
 
     /**
@@ -91,27 +102,27 @@ class ThreadController extends Controller
         $category = $validatedData['category'];
 
         // conditional redirect
-            if ($category === 'study') {
-            // return redirect()
-            //     ->route('studies.index', ThreadCategory::STUDY->value)
-            //     ->with('success', 'Thread created.');
+            if ($category === ThreadCategory::STUDY->value) {
+            return redirect()
+                ->route('studies.index', ThreadCategory::STUDY->value)
+                ->with('success', 'Thread created.');
             
             // development
-            return response()->json([
-                'message' => 'Thread created.',
-                'redirect_to' => '/studies'
-            ]);
+            // return response()->json([
+            //     'message' => 'Thread created.',
+            //     'redirect_to' => '/studies'
+            // ]);
 
-        } elseif ($category === 'lost_item') {
-            // return redirect()
-            //     ->route('lost-items.index', ThreadCategory::LOST_ITEMS->value)
-            //     ->with('success', 'Thread created.');
+        } elseif ($category === ThreadCategory::LOST_ITEMS->value) {
+            return redirect()
+                ->route('lost-items.index', ThreadCategory::LOST_ITEMS->value)
+                ->with('success', 'Thread created.');
 
             // development
-            return response()->json([
-                'message' => 'Thread created.',
-                'redirect_to' => '/lost-items'
-            ]);
+            // return response()->json([
+            //     'message' => 'Thread created.',
+            //     'redirect_to' => '/lost-items'
+            // ]);
         }
     }
 

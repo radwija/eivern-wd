@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Thread } from '@/types';
 import { MessageCircleMore, Send } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -14,8 +15,8 @@ interface User {
 interface Comment {
     id: number;
     user: User;
-    text: string;
-    date: string;
+    message: string;
+    created_at: string;
 }
 
 export interface Study {
@@ -24,7 +25,7 @@ export interface Study {
     description: string;
     image?: string[];
     user: User;
-    date: string;
+    created_at: string;
     active: boolean;
     comments: Comment[];
 }
@@ -116,7 +117,7 @@ const StudyCard: React.FC<{ study: Study; onCommentIconClick: () => void }> = ({
                     <div className="flex-1">
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white">{study.title}</h3>
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            {study.user.name} | {formatTimeAgo(study.date)}
+                            {study.user.name} | {formatTimeAgo(study.created_at)}
                         </p>
                     </div>
                 </div>
@@ -149,9 +150,9 @@ const CommentSection: React.FC<{ comments: Comment[] }> = ({ comments }) => {
                             <div className="flex-1 space-y-3 rounded-lg bg-gray-100 p-4 sm:space-y-0 dark:bg-gray-700">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                                     <p className="font-semibold text-gray-900 dark:text-white">{comment.user.name}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatTimeAgo(comment.date)}</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatTimeAgo(comment.created_at)}</p>
                                 </div>
-                                <p className="mt-2 text-gray-700 dark:text-gray-300">{comment.text}</p>
+                                <p className="mt-2 text-gray-700 dark:text-gray-300">{comment.message}</p>
                             </div>
                         </div>
                     ))}
