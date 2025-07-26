@@ -33,7 +33,6 @@ const Index = () => {
                         )
                     }
                 />
-                {/* FIX: Lakukan map pada 'events' dari props, bukan 'datas' */}
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                     {events.map((event) => (
                         <EventCard key={event.id} {...event} />
