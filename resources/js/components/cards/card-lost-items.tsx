@@ -13,7 +13,7 @@ export interface LostItem {
     };
     contact_name: string;
     phone_number: string;
-    date: string;
+    created_at: string;
     active: boolean;
 }
 
@@ -122,7 +122,7 @@ const LostItemCard: React.FC<LostItemCardProps> = ({ item }) => {
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">{item.title}</h3>
                         </div>
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            {item.user.name} | {formatTimeAgo(item.date)}
+                            {item.user.name} | {formatTimeAgo(item.created_at)}
                         </p>
                     </div>
                 </div>
