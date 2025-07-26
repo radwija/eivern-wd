@@ -23,8 +23,8 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->foreignIdFor(User::class)->constrained();
             $table->text('description');
-            $table->string('contact_name');
-            $table->string('phone_number');
+            $table->string('contact_name')->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamps();
         });
     }
