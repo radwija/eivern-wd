@@ -2,11 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
-use Illuminate\Http\Request;
-use App\Enums\ThreadCategory;
-use Illuminate\Foundation\Inspiring;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -39,27 +38,13 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-        $user = $request->user();
-        
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $user ? [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                ] : null,
-            ],
-            'studyCategory' => [
-                'value' => ThreadCategory::STUDY->value,
-                'label' => str_replace('_', ' ', ThreadCategory::STUDY->name),
-            ],
-            'lostItemsCategory' => [
-                'value' => ThreadCategory::LOST_ITEMS->value,
-                'label' => str_replace('_', ' ', ThreadCategory::LOST_ITEMS->name),
+                'user' => $request->user(),
             ],
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
