@@ -6,7 +6,7 @@ export interface LostItem {
     id: number;
     title: string;
     description: string;
-    image: string[];
+    images: string[];
     user: {
         name: string;
         avatarUrl?: string;
@@ -79,12 +79,12 @@ const ItemImageDisplay: React.FC<{ images: string[]; title: string }> = ({ image
                             <Card className="border-none bg-transparent shadow-none">
                                 <CardContent className="flex aspect-video items-center justify-center p-0">
                                     <img
-                                        src={img}
+                                        src={`/storage/${img.url}`}
                                         alt={`${title} - gambar ${index + 1}`}
                                         className="h-full w-full rounded-lg object-cover"
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).src = 'https://placehold.co/1600x900/cccccc/ffffff?text=Gagal+Muat';
-                                        }}
+                                        // onError={(e) => {
+                                        //     (e.target as HTMLImageElement).src = 'https://placehold.co/1600x900/cccccc/ffffff?text=Gagal+Muat';
+                                        // }}
                                     />
                                 </CardContent>
                             </Card>
@@ -99,7 +99,7 @@ const ItemImageDisplay: React.FC<{ images: string[]; title: string }> = ({ image
 
     return (
         <img
-            src={images[0]}
+            src={`/storage/${images[0].url}`}
             alt={title}
             className="aspect-square w-full rounded-lg object-contain"
             onError={(e) => {
@@ -110,6 +110,7 @@ const ItemImageDisplay: React.FC<{ images: string[]; title: string }> = ({ image
 };
 
 const LostItemCard: React.FC<LostItemCardProps> = ({ item }) => {
+    console.log({ item });
     return (
         <div className="mx-auto my-6 max-w-2xl overflow-hidden rounded-xl border-1 bg-white shadow-lg dark:bg-gray-800">
             {/* Bagian Atas: Detail Teks */}
@@ -118,7 +119,7 @@ const LostItemCard: React.FC<LostItemCardProps> = ({ item }) => {
                     <UserAvatar user={item.user} />
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className={`h-3 w-3 flex-shrink-0 rounded-full ${item.active === true ? 'bg-green-500' : 'bg-red-500'}`} />
+                            <span className={`h-3 w-3 flex-shrink-0 rounded-full ${item.is_active ? 'bg-green-500' : 'bg-slate-500'}`} />
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">{item.title}</h3>
                         </div>
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -137,7 +138,7 @@ const LostItemCard: React.FC<LostItemCardProps> = ({ item }) => {
 
             {/* Bagian Bawah: Gambar atau Carousel */}
             <div className="px-6 pb-6">
-                <ItemImageDisplay images={item.image} title={item.title} />
+                <ItemImageDisplay images={item.images} title={item.title} />
             </div>
         </div>
     );
