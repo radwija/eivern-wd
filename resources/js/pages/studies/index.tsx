@@ -151,24 +151,28 @@ const Index = () => {
                         <StudyCard key={data.id} study={data} />
                     ))}
                 </div>
-                <section className="top-24 max-h-[calc(100vh-7rem)] space-y-4 overflow-y-auto rounded-xl border bg-white px-4 py-4 shadow-sm lg:sticky dark:bg-neutral-900">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Online Users</h2>
-                    </div>
-                    <div className="space-y-3">
-                        {dataUser.map((user, idx) => (
-                            <div
-                                key={idx}
-                                className="flex items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-gray-100 dark:hover:bg-neutral-800"
-                            >
-                                <UserAvatar user={user} />
-                                <div>
-                                    <p className="font-medium text-gray-800 dark:text-gray-200">{user.name}</p>
+
+                {/* user list */}
+                <aside className="hidden lg:block">
+                    <section className="fixed top-20 right-6 z-30 h-[85dvh] w-[22rem] overflow-y-auto rounded-xl border bg-white px-4 py-4 shadow-md dark:bg-neutral-900">
+                        <div className="mb-2 flex items-center justify-between">
+                            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-100">Users List</h2>
+                        </div>
+                        <div className="">
+                            {dataUser.map((user, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-center gap-3 rounded-lg px-2 py-2 transition hover:bg-gray-100 dark:hover:bg-neutral-800"
+                                >
+                                    <UserAvatar user={user} />
+                                    <div>
+                                        <p className="font-medium text-gray-800 dark:text-gray-200">{user.name}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+                            ))}
+                        </div>
+                    </section>
+                </aside>
             </div>
         </AppLayout>
     );

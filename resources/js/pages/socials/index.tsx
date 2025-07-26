@@ -1,6 +1,7 @@
+import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Message, SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -10,7 +11,7 @@ interface IndexProps {
     chat_group_id: number;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Studies', href: '/studies' }];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Socials', href: '/social' }];
 
 const Index = ({ messages, chat_group_id }: IndexProps) => {
     const { auth } = usePage<SharedData>().props;
@@ -74,7 +75,9 @@ const Index = ({ messages, chat_group_id }: IndexProps) => {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <main className="flex h-screen w-full items-center justify-center px-56">
+            <Head title="Socials" />
+            <main className="p-6">
+                <Heading title="Socials" description="You can connect with everyone." />
                 <div className="w-full rounded-md border-1 shadow-md">
                     <div className="flex max-h-[80vh] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-4">
                         {messagesState.map((msg, idx) => (

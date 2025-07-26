@@ -1,8 +1,11 @@
 import { Textarea } from '@/components/buttons/text-area';
 import FormField from '@/components/form-field/form-field';
+import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
+import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Trash2, UploadCloud } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -57,83 +60,85 @@ const Create = () => {
             fileInputRef.current.value = '';
         }
     };
-
+    const breadcrumbs: BreadcrumbItem[] = [{ title: 'Create post', href: '/studies/create' }];
     return (
-        <main>
-            <Head title="Create Lost Item" />
-            <div className="flex h-screen items-center justify-center">
-                <form>
-                    <h1 className="text-2xl font-bold">Create Study Thread</h1>
-                    {previewUrl && (
-                        <div className="space-y-2">
-                            <Label htmlFor="image">{'Preview'}</Label>
-                            <div className="relative max-w-[12rem] space-y-2">
-                                <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="w-full cursor-pointer rounded-md object-cover"
-                                    onClick={() => handleImageClick(previewUrl)}
-                                />
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    className="absolute top-2 right-2 cursor-pointer"
-                                    onClick={handleRemoveImage}
-                                >
-                                    <Trash2 />
-                                </Button>
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Create Post" />
+            <main className="p-6">
+                <Heading title="Create Post" />
+                <div className="rounded-md border-1 p-6 shadow-md">
+                    <form className="space-y-4">
+                        {previewUrl && (
+                            <div className="space-y-2">
+                                <Label htmlFor="image">{'Preview'}</Label>
+                                <div className="relative max-w-[12rem] space-y-2">
+                                    <img
+                                        src={previewUrl}
+                                        alt="Preview"
+                                        className="w-full cursor-pointer rounded-md object-cover"
+                                        onClick={() => handleImageClick(previewUrl)}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="sm"
+                                        className="absolute top-2 right-2 cursor-pointer"
+                                        onClick={handleRemoveImage}
+                                    >
+                                        <Trash2 />
+                                    </Button>
+                                </div>
                             </div>
+                        )}
+                        <div className="col-span-2 space-y-2">
+                            <Label htmlFor="image">Image</Label>
+                            <label className="flex h-fit cursor-pointer items-center gap-2 truncate rounded-md border border-gray-300 px-4 py-2.5 hover:bg-gray-100 lg:max-w-[36rem] dark:hover:bg-zinc-900">
+                                <UploadCloud className="h-5 w-5 dark:text-white" />
+                                <span className="text-sm dark:text-white"> {fileName ? fileName : 'Choose image file'}</span>
+                                <input
+                                    id="image"
+                                    type="file"
+                                    accept="image/png, image/gif, image/jpeg, image/jpg"
+                                    className="hidden"
+                                    required
+                                    ref={fileInputRef}
+                                    onChange={handleFile}
+                                />
+                            </label>
+                            <InputError message={errors.image} />
                         </div>
-                    )}
-                    <div className="col-span-2 space-y-2">
-                        <Label htmlFor="image">Image</Label>
-                        <label className="flex h-fit cursor-pointer items-center gap-2 truncate rounded-md border border-gray-300 px-4 py-2.5 hover:bg-gray-100 lg:max-w-[36rem] dark:hover:bg-zinc-900">
-                            <UploadCloud className="h-5 w-5 dark:text-white" />
-                            <span className="text-sm dark:text-white"> {fileName ? fileName : 'Choose image file'}</span>
-                            <input
-                                id="image"
-                                type="file"
-                                accept="image/png, image/gif, image/jpeg, image/jpg"
-                                className="hidden"
-                                required
-                                ref={fileInputRef}
-                                onChange={handleFile}
-                            />
-                        </label>
-                        <InputError message={errors.image} />
-                    </div>
 
-                    <FormField
-                        type="text"
-                        placeholder="Input the title"
-                        id="title"
-                        required
-                        label="Title"
-                        error={errors.title}
-                        onChange={(e) => setData('title', e.target.value)}
-                    />
-                    <div className="space-y-2">
-                        <Label htmlFor="reason">description</Label>
-                        <Textarea
-                            placeholder={'Type your description...'}
-                            id="description"
-                            value={data.description}
-                            onChange={(e) => setData('description', e.target.value)}
+                        <FormField
+                            type="text"
+                            placeholder="Input the title"
+                            id="title"
                             required
+                            label="Title"
+                            error={errors.title}
+                            onChange={(e) => setData('title', e.target.value)}
                         />
-                    </div>
-                    <div className="col-span-2 space-x-4 text-end">
-                        {/* <LinkButton href={route('event-hilight-index')} variant="outline" size="lg">
+                        <div className="space-y-2">
+                            <Label htmlFor="reason">description</Label>
+                            <Textarea
+                                placeholder={'Type your description...'}
+                                id="description"
+                                value={data.description}
+                                onChange={(e) => setData('description', e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="col-span-2 space-x-4 text-end">
+                            {/* <LinkButton href={route('event-hilight-index')} variant="outline" size="lg">
                             Back
                         </LinkButton> */}
-                        <Button type="submit" size="lg">
-                            Submit
-                        </Button>
-                    </div>
-                </form>
-            </div>
-        </main>
+                            <Button type="submit" size="lg">
+                                Submit
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </AppLayout>
     );
 };
 

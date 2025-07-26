@@ -63,8 +63,8 @@ const Index = () => {
             <Head title="Events" />
             <main className="px-4 py-6">
                 <Heading
-                    title={'Studies'}
-                    description={'View the complete list of Studies.'}
+                    title={'Events'}
+                    description={'View the complete list of Events.'}
                     action={
                         canPost && (
                             <div className="flex gap-2">
