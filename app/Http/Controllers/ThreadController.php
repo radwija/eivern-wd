@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class ThreadController extends Controller
 {
@@ -21,16 +22,16 @@ class ThreadController extends Controller
     {
         $category = $request->query('category') ?? ThreadCategory::STUDY->value;
         $threads = Thread::where('category', $category)
-        ->with(['images', 'user:id,name', 'comments.user:id,name'])
-        ->latest()
-        ->get();
+            ->with(['images', 'user:id,name', 'comments.user:id,name'])
+            ->latest()
+            ->get();
 
         // return response()->json($thread);
         if ($category === ThreadCategory::STUDY->value) {
             return Inertia::render('studies/index', [
                 'threads' => $threads,
             ]);
-        } 
+        }
         if ($category === ThreadCategory::LOST_ITEMS->value) {
             // return response()->json($threads);
             return Inertia::render('lost-items/index', [
@@ -49,7 +50,7 @@ class ThreadController extends Controller
                 'category' => ThreadCategory::STUDY->value,
             ]);
         }
-        
+
         $category = $request->query('category');
 
         abort_if(!in_array(
@@ -94,7 +95,11 @@ class ThreadController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('public/threads');
+                $path = $file->storeAs(
+                    'threads',
+                    Str::uuid(),
+                    'public'
+                );
                 $thread->images()->create(['url' => $path]);
             }
         }
@@ -102,11 +107,11 @@ class ThreadController extends Controller
         $category = $validatedData['category'];
 
         // conditional redirect
-            if ($category === ThreadCategory::STUDY->value) {
+        if ($category === ThreadCategory::STUDY->value) {
             return redirect()
                 ->route('studies.index', ThreadCategory::STUDY->value)
                 ->with('success', 'Thread created.');
-            
+
             // development
             // return response()->json([
             //     'message' => 'Thread created.',
@@ -115,7 +120,9 @@ class ThreadController extends Controller
 
         } elseif ($category === ThreadCategory::LOST_ITEMS->value) {
             return redirect()
-                ->route('lost-items.index', ThreadCategory::LOST_ITEMS->value)
+                ->route('threads.index', [
+                    'category' => ThreadCategory::LOST_ITEMS->value
+                ])
                 ->with('success', 'Thread created.');
 
             // development
@@ -173,7 +180,7 @@ class ThreadController extends Controller
      */
     public function destroy(Thread $thread)
     {
-        if($thread->user_id !== Auth::id()) {
+        if ($thread->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

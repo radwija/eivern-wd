@@ -3,25 +3,27 @@ import FormField from '@/components/form-field/form-field';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Head, useForm } from '@inertiajs/react';
-import { Trash2, UploadCloud } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { Head, router, useForm } from '@inertiajs/react';
+import { UploadCloud } from 'lucide-react';
+import { FormEventHandler, useRef, useState } from 'react';
 
 interface LostItemsProps {
     title: string;
     description: string;
+    category: string;
     contact_name: string;
     phone_number: string;
-    image: string;
+    images: File[] | null;
 }
 
 const Create = () => {
     const { data, setData, post, errors, reset } = useForm({
         title: '',
         description: '',
+        category: 'lost-items',
         contact_name: '',
         phone_number: '',
-        image: '',
+        images: null,
     });
 
     const [file, setFile] = useState<File | null>(null);
@@ -29,26 +31,31 @@ const Create = () => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState('');
+    const [files, setFiles] = useState<File[]>([]);
+    const [previews, setPreviews] = useState<string[]>([]);
 
     const handleImageClick = (url: string) => {
         setSelectedImage(url);
     };
+
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0];
-        if (!selectedFile) return;
+        const selectedFiles = Array.from(e.target.files || []);
+        setFiles(selectedFiles);
 
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            const result = reader.result;
-            if (typeof result === 'string') {
-                setPreviewUrl(result);
-                setData('image', result);
-            }
-        };
-        reader.readAsDataURL(selectedFile);
+        const newPreviews: string[] = [];
+        selectedFiles.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (typeof reader.result === 'string') {
+                    newPreviews.push(reader.result);
+                    // pastikan update state setelah semua file dibaca
+                    if (newPreviews.length === selectedFiles.length) {
+                        setPreviews(newPreviews);
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
     };
 
     const handleRemoveImage = () => {
@@ -60,12 +67,38 @@ const Create = () => {
         }
     };
 
+    const handleSubmit: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('category', 'lost-items');
+        formData.append('contact_name', data.contact_name);
+        formData.append('phone_number', data.phone_number);
+
+        files.forEach((file) => {
+            formData.append('images[]', file);
+        });
+
+        // Gunakan Inertia form submission manual
+        router.post(route('threads.store'), formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                reset();
+                setFiles([]);
+                setPreviews([]);
+            },
+        });
+    };
+
     return (
         <main>
             <Head title="Create Lost Item" />
             <div className="flex h-screen items-center justify-center">
-                <form>
+                <form onSubmit={handleSubmit}>
                     <h1 className="text-2xl font-bold">Create Lost Item Page</h1>
+                    <input type="hidden" id="category" value={'lost-items'} />
                     <FormField
                         type="text"
                         placeholder="Input the title"
@@ -76,7 +109,7 @@ const Create = () => {
                         onChange={(e) => setData('title', e.target.value)}
                     />
                     <div className="space-y-2">
-                        <Label htmlFor="reason">description</Label>
+                        <Label htmlFor="description">Description</Label>
                         <Textarea
                             placeholder={'Type your description...'}
                             id="description"
@@ -90,7 +123,7 @@ const Create = () => {
                         placeholder="Input the contact name"
                         id="contact_name"
                         required
-                        label="contact_name"
+                        label="Contact Name"
                         onChange={(e) => setData('contact_name', e.target.value)}
                         error={errors.contact_name}
                     />
@@ -99,7 +132,7 @@ const Create = () => {
                         placeholder="Input the phone number"
                         id="phone_number"
                         required
-                        label="phone_number"
+                        label="Phone Number"
                         onChange={(e) => setData('phone_number', e.target.value)}
                         error={errors.phone_number}
                     />
@@ -113,32 +146,27 @@ const Create = () => {
                                 type="file"
                                 accept="image/png, image/gif, image/jpeg, image/jpg"
                                 className="hidden"
-                                required
+                                multiple
                                 ref={fileInputRef}
                                 onChange={handleFile}
                             />
                         </label>
                         <InputError message={errors.image} />
                     </div>
-                    {previewUrl && (
+                    {previews.length > 0 && (
                         <div className="space-y-2">
-                            <Label htmlFor="image">{'Preview'}</Label>
-                            <div className="relative max-w-[12rem] space-y-2">
-                                <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="w-full cursor-pointer rounded-md object-cover"
-                                    onClick={() => handleImageClick(previewUrl)}
-                                />
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    className="absolute top-2 right-2 cursor-pointer"
-                                    onClick={handleRemoveImage}
-                                >
-                                    <Trash2 />
-                                </Button>
+                            <Label htmlFor="image">Preview</Label>
+                            <div className="flex flex-wrap gap-4">
+                                {previews.map((url, index) => (
+                                    <div key={index} className="relative max-w-[12rem] space-y-2">
+                                        <img
+                                            src={url}
+                                            alt={`Preview ${index}`}
+                                            className="w-full cursor-pointer rounded-md object-cover"
+                                            onClick={() => handleImageClick(url)}
+                                        />
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}
