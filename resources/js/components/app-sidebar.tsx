@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { SharedData, type NavItem } from '@/types';
 import { UserRoleEnum } from '@/types/enum';
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronUp, LayoutGrid, Megaphone, Search } from 'lucide-react';
+import { BookOpen, ChevronUp, LayoutGrid, Megaphone, Search } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
@@ -34,6 +34,18 @@ const navItems: NavItem[] = [
                 title: 'Lost Items',
                 href: '/lost-items',
                 icon: Search,
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
+            },
+            {
+                title: 'Studies',
+                href: '/studies',
+                icon: BookOpen,
+                roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
+            },
+            {
+                title: 'Socials',
+                href: '/socials',
+                icon: BookOpen,
                 roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.UKM],
             },
         ],
