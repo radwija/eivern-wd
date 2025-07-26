@@ -6,7 +6,7 @@ enum UserRole: string
 {
     case STUDENT = 'student';
     case ADMIN = 'admin';
-    case ORGANIZATION_UKM = 'ORGANIZATION_UKM-ukm';
+    case ORGANIZATION_UKM = 'organization-ukm';
 
     public function label(): string
     {
