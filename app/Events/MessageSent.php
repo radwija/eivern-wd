@@ -30,6 +30,10 @@ class MessageSent implements ShouldBroadcastNow
     {
         return [
             'id' => $this->message->id,
+            'user' => [
+                'id' => $this->message->user->id,
+                'name' => $this->message->user->name,
+            ],
             'user_id' => $this->message->user_id,
             'content' => $this->message->content,
             'created_at' => $this->message->created_at->toDateTimeString(),

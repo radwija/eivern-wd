@@ -32,11 +32,10 @@ class SocialController extends Controller
             'chat_group_id' => $request['chat_group_id']
         ]);
 
-        broadcast(new MessageSent($message))->toOthers();
+        $message->load('user');
 
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => $message->only(['id', 'content', 'user_id', 'chat_group_id', 'created_at']),
-        // ]);
+        broadcast(new MessageSent($message));
+
+        return response()->json($message);
     }
 }
