@@ -1,8 +1,8 @@
 import { LinkButton } from '@/components/buttons/link-button';
-import LostItemCard, { LostItem } from '@/components/cards/card-lost-items';
+import LostItemCard from '@/components/cards/card-lost-items';
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, Thread } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
@@ -23,55 +23,57 @@ const UserAvatar: React.FC<{ user: UserProps }> = ({ user }) => (
     />
 );
 
-const Index = () => {
-    const datas: LostItem[] = [
-        {
-            id: 1,
-            title: 'Tumbler Hilang',
-            description:
-                'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
-            image: ['img/tumbler.jpeg'],
-            contact_name: 'Gus Maha',
-            phone_number: '081234567890',
-            user: {
-                name: 'Gus Maha',
-                avatarUrl: 'img/profile.png',
-            },
-            date: '2025-05-01T12:00:00Z',
-            active: true,
-        },
+const Index = ({ threads }: { threads: Thread[] }) => {
+    // const datas: LostItem[] = [
+    //     {
+    //         id: 1,
+    //         title: 'Tumbler Hilang',
+    //         description:
+    //             'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
+    //         image: ['img/tumbler.jpeg'],
+    //         contact_name: 'Gus Maha',
+    //         phone_number: '081234567890',
+    //         user: {
+    //             name: 'Gus Maha',
+    //             avatarUrl: 'img/profile.png',
+    //         },
+    //         date: '2025-05-01T12:00:00Z',
+    //         active: true,
+    //     },
 
-        {
-            id: 2,
-            title: 'Tumbler Hilang',
-            description:
-                'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
-            image: ['img/tumbler.jpeg'],
-            contact_name: 'Gus Maha',
-            phone_number: '081234567890',
-            user: {
-                name: 'Gus Maha',
-                avatarUrl: 'img/profile.png',
-            },
-            date: '2025-05-01T12:00:00Z',
-            active: true,
-        },
-        {
-            id: 3,
-            title: 'Tumbler Hilang',
-            description:
-                'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
-            image: ['img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg'],
-            contact_name: 'Gus Maha',
-            phone_number: '081234567890',
-            user: {
-                name: 'Gus Maha',
-                avatarUrl: 'img/profile.png',
-            },
-            date: '2025-05-01T12:00:00Z',
-            active: false,
-        },
-    ];
+    //     {
+    //         id: 2,
+    //         title: 'Tumbler Hilang',
+    //         description:
+    //             'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
+    //         image: ['img/tumbler.jpeg'],
+    //         contact_name: 'Gus Maha',
+    //         phone_number: '081234567890',
+    //         user: {
+    //             name: 'Gus Maha',
+    //             avatarUrl: 'img/profile.png',
+    //         },
+    //         date: '2025-05-01T12:00:00Z',
+    //         active: true,
+    //     },
+    //     {
+    //         id: 3,
+    //         title: 'Tumbler Hilang',
+    //         description:
+    //             'Saya menemukan sebuah tumbler yang tergeletak di meja perpustakaan, bagi siapapun yang merasa memiliki ini bisa hubungi saya.',
+    //         image: ['img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg', 'img/tumbler.jpeg'],
+    //         contact_name: 'Gus Maha',
+    //         phone_number: '081234567890',
+    //         user: {
+    //             name: 'Gus Maha',
+    //             avatarUrl: 'img/profile.png',
+    //         },
+    //         date: '2025-05-01T12:00:00Z',
+    //         active: false,
+    //     },
+    // ];
+
+    console.log(threads);
 
     const dataUser: UserProps[] = [
         { id: 1, name: 'Ahmad Subarjo', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop' },
@@ -106,7 +108,7 @@ const Index = () => {
                             </div>
                         }
                     />
-                    {datas.map((data) => (
+                    {threads.map((data) => (
                         <LostItemCard key={data.id} item={data} />
                     ))}
                 </div>
