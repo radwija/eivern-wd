@@ -73,10 +73,10 @@ const Index = ({ messages, chat_group_id }: IndexProps) => {
     }
 
     return (
-        <AppLayout>
-            <main className="flex h-screen w-full items-center justify-center px-56 py-20">
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <main className="flex h-screen w-full items-center justify-center px-56">
                 <div className="w-full rounded-md border-1 shadow-md">
-                    <div className="flex max-h-[70vh] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-4">
+                    <div className="flex max-h-[80vh] flex-1 flex-col gap-2 overflow-y-auto rounded-xl p-4">
                         {messagesState.map((msg, idx) => (
                             <div key={idx} ref={bottomRef} className={`flex ${msg.user_id === userId ? 'justify-end' : 'justify-start'}`}>
                                 <div
@@ -90,7 +90,7 @@ const Index = ({ messages, chat_group_id }: IndexProps) => {
                         ))}
                     </div>
                     <div className="px-1 py-1">
-                        <div className="flex w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2">
+                        <div className="flex w-full items-center justify-between gap-2 px-4 py-2">
                             <textarea
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
