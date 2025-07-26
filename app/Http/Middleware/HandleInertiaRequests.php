@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Illuminate\Http\Request;
+use App\Enums\ThreadCategory;
+use Illuminate\Foundation\Inspiring;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -51,6 +52,14 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'role' => $user->role,
                 ] : null,
+            ],
+            'studyCategory' => [
+                'value' => ThreadCategory::STUDY->value,
+                'label' => str_replace('_', ' ', ThreadCategory::STUDY->name),
+            ],
+            'lostItemsCategory' => [
+                'value' => ThreadCategory::LOST_ITEMS->value,
+                'label' => str_replace('_', ' ', ThreadCategory::LOST_ITEMS->name),
             ],
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
