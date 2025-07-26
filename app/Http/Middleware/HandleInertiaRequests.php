@@ -53,10 +53,14 @@ class HandleInertiaRequests extends Middleware
                     'role' => $user->role,
                 ] : null,
             ],
-            'threadCategories' => collect(ThreadCategory::cases())->map(fn ($case) => [
-                'value' => $case->value,
-                'label' => str_replace('_', ' ', $case->name),
-            ]),
+            'studyCategory' => [
+                'value' => ThreadCategory::STUDY->value,
+                'label' => str_replace('_', ' ', ThreadCategory::STUDY->name),
+            ],
+            'lostItemsCategory' => [
+                'value' => ThreadCategory::LOST_ITEMS->value,
+                'label' => str_replace('_', ' ', ThreadCategory::LOST_ITEMS->name),
+            ],
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
