@@ -32,19 +32,19 @@ const navItems: NavItem[] = [
         children: [
             {
                 title: 'Lost Items',
-                href: '/lost-items',
+                href: route('threads.index', { category: 'lost-items' }),
                 icon: Search,
                 roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
             {
                 title: 'Studies',
-                href: '/studies',
+                href: route('threads.index', { category: 'study' }),
                 icon: BookOpen,
                 roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
             {
                 title: 'Socials',
-                href: '/socials',
+                href: route('socials.index'),
                 icon: MessageCircle,
                 roles: [UserRoleEnum.ADMIN, UserRoleEnum.STUDENT, UserRoleEnum.ORGANIZATION_UKM],
             },
@@ -52,7 +52,7 @@ const navItems: NavItem[] = [
     },
     {
         title: 'Events',
-        href: '/events',
+        href: route('events.index'),
         icon: Calendar,
         roles: [UserRoleEnum.STUDENT, UserRoleEnum.ADMIN, UserRoleEnum.ORGANIZATION_UKM],
     },
