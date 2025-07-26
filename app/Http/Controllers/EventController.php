@@ -7,20 +7,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class EventController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
-        $events = Event::where('start_date', '>=', now()->toDateString())
+        $events = Event::with('organizer:id,name')
+            // FIX: Hapus atau beri komentar pada baris ini untuk menampilkan semua event
+            // ->where('start_date', '>=', now()->toDateString()) 
             ->orderBy('start_date', 'asc')
-            // ->paginate(15)
-            ->get();
+            ->get()
+            ->map(function ($event) {
+                $event->image_url = $event->image ? Storage::url($event->image) : null;
+                return $event;
+            });
 
-        return response()->json([
+        return Inertia::render('events/index', [
             'events' => $events,
         ]);
     }
@@ -62,9 +68,16 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Event $event)
+    public function show(Event $event): Response
     {
-        return response()->json($event->load('organizer:id,name'));
+        // FIX: Muat relasi organizer dan buat URL gambar yang bisa diakses publik.
+        $event->load('organizer:id,name');
+        $event->image_url = $event->image ? Storage::url($event->image) : null;
+
+        // FIX: Render komponen Inertia 'events/show' dan kirim data event tunggal.
+        return Inertia::render('events/show', [
+            'event' => $event,
+        ]);
     }
 
     /**

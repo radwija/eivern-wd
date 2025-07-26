@@ -52,7 +52,7 @@ const navItems: NavItem[] = [
     },
     {
         title: 'Events',
-        href: '/events',
+        href: 'events',
         icon: Calendar,
         roles: [UserRoleEnum.STUDENT, UserRoleEnum.ADMIN, UserRoleEnum.ORGANIZATION_UKM],
     },

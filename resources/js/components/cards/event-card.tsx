@@ -1,56 +1,78 @@
+import { Link } from '@inertiajs/react';
+import { Calendar, Tag } from 'lucide-react';
 import React from 'react';
+import { Button } from '../ui/button';
 
-interface User {
-    name: string;
-}
-
-export type EventCardProps = {
+export interface EventCardProps {
     id: number;
     title: string;
-    organizer_id: number;
-    organizer?: User;
     description: string;
-    image: string;
-    price: number;
+    price: number | null;
+    organizer: { name: string };
+    image_url: string | null;
     start_date: string;
-    end_date: string;
+    end_date: string | null;
+}
+
+const formatPrice = (price: number | null): string => {
+    if (!price) {
+        return 'Gratis';
+    }
+    return `Rp ${price.toLocaleString('id-ID')}`;
 };
 
-const EventCard: React.FC<EventCardProps> = ({ start_date, description, end_date, title, price, organizer, image }) => {
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'short',
-        });
-    };
+const formatDate = (dateString: string | null): string | null => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+};
 
-    const formatPrice = (amount: number) => {
-        return amount.toLocaleString('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            maximumFractionDigits: 0,
-        });
-    };
+const EventCard: React.FC<EventCardProps> = ({ id, title, description, price, organizer, image_url, start_date, end_date }) => {
+    const startDateFormatted = formatDate(start_date);
+    const endDateFormatted = formatDate(end_date);
+
     return (
-        <div className="w-full cursor-pointer overflow-hidden rounded-xl bg-white shadow-md transition-transform duration-300 ease-in-out hover:scale-[1.01]">
-            <div className="relative flex h-36 items-start justify-start bg-gray-200">
-                {image ? <img src={image} alt={title} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-gray-300" />}
-                <div className="absolute top-2 left-2 rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white shadow">
-                    {formatDate(start_date)}
-                </div>
+        <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-white shadow-md transition-shadow duration-300 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
+            {/* Gambar Event */}
+            <div className="aspect-video w-full overflow-hidden">
+                <img
+                    src={image_url || 'https://placehold.co/600x400/E2E8F0/4A5568?text=Event'}
+                    alt={title}
+                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                />
             </div>
-            <div className="mb-10 space-y-1 px-4 py-3">
-                <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-lg font-semibold text-black">{title}</h3>
-                    <div className="flex gap-2">
-                        <p className="rounded-full bg-blue-500 px-2 py-1 text-xs text-white">{formatPrice(price)}</p>
+
+            {/* Konten Kartu */}
+            <div className="flex flex-1 flex-col p-4">
+                {/* Judul */}
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h3>
+
+                {/* Penyelenggara */}
+                <p className="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-400">{organizer.name}</p>
+
+                {/* Deskripsi (dibatasi) */}
+                <p className="mt-2 line-clamp-3 flex-grow text-sm text-gray-600 dark:text-gray-300">{description}</p>
+
+                {/* Detail: Tanggal & Harga */}
+                <div className="mt-4 space-y-2 border-t pt-4 text-sm text-gray-500 dark:border-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 flex-shrink-0" />
+                        <span>
+                            {startDateFormatted}
+                            {endDateFormatted && startDateFormatted !== endDateFormatted ? ` - ${endDateFormatted}` : ''}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 flex-shrink-0" />
+                        <span className="font-semibold">{formatPrice(price)}</span>
                     </div>
                 </div>
-                <div className="space-y-4">
-                    <p className="text-sm">{organizer?.name}</p>
-                    <p className="text-sm text-muted-foreground">{description}</p>
-                </div>
+                <Link href={route('events.show', id)} className="mt-3">
+                    <Button> Show Detail</Button>
+                </Link>
             </div>
         </div>
     );

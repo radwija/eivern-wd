@@ -1,89 +1,88 @@
-import { ButtonIcon } from '@/components/buttons/button-icon';
 import Heading from '@/components/heading';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { Calendar, MapPin, Phone } from 'lucide-react';
+import { BreadcrumbItem, InertiaPageProps } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+import { Calendar, MapPin } from 'lucide-react';
 
-interface User {
-    name: string;
-}
-
-interface EventDetailsProps {
+// --- Tipe Data ---
+interface EventDetails {
     id: number;
     title: string;
-    organizer_id: number;
-    organizer?: User;
     description: string;
-    image: string;
-    price: number;
+    price: number | null;
+    organizer: { name: string };
+    image_url: string | null;
     start_date: string;
-    end_date: string;
+    end_date: string | null;
 }
 
-const Show: React.FC<EventDetailsProps> = ({ start_date, description, end_date, title, price, organizer, image }) => {
-    const breadcrumbs: BreadcrumbItem[] = [{ title: 'Event Details', href: 'events' }];
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'short',
+interface ShowPageProps extends InertiaPageProps {
+    event: EventDetails;
+}
+
+// --- Komponen Halaman Show ---
+const Show = () => {
+    const { event } = usePage<ShowPageProps>().props;
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Events', href: route('events.index') },
+        { title: 'Event Details', href: route('events.show', event.id) },
+    ];
+
+    const formatPrice = (price: number | null): string => {
+        if (!price) return 'Gratis';
+        return `Rp ${price.toLocaleString('id-ID')}`;
+    };
+
+    const formatDate = (dateString: string | null): string => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
         });
     };
 
-    const formatPrice = (amount: number) => {
-        return amount.toLocaleString('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            maximumFractionDigits: 0,
-        });
-    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Event Details" />
-            <main className="p-6">
-                <Heading title={'Event Details'} description={'View the Event Details'} backButton={<ButtonIcon href={route('events.index')} />} />
-
-                <div className="mx-auto max-w-6xl rounded-t-lg border-1 shadow-md">
-                    {/* Banner Gambar */}
-                    <div className="mb-4 aspect-video w-full overflow-hidden rounded-t-lg bg-gray-200">
-                        <img src="https://via.placeholder.com/800x400" alt="Event Banner" className="h-full w-full object-cover" />
-                    </div>
-
-                    <div className="px-4 py-6 md:px-6">
-                        {/* Info Event */}
-                        <div className="mb-4 space-y-2">
-                            <h1 className="text-2xl font-bold">{title}</h1>
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <Calendar className="h-4 w-4" />
-                                <span>{formatDate(start_date)}</span>
-                                <span>•</span>
-                                <MapPin className="h-4 w-4" />
-                                <span>{organizer?.name}</span>
-                            </div>
+            <Head title={event.title} />
+            <main className="px-4 py-6 md:px-6">
+                <Heading title={event.title} description={`Diselenggarakan oleh ${event.organizer.name}`} />
+                <div className="mx-auto max-w-4xl">
+                    <div className="mt-6 overflow-hidden rounded-lg border bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                        {/* Banner Gambar */}
+                        <div className="aspect-video w-full bg-gray-200 dark:bg-gray-700">
+                            <img
+                                src={event.image_url || 'https://placehold.co/800x450/E2E8F0/4A5568?text=Event'}
+                                alt={event.title}
+                                className="h-full w-full object-cover"
+                            />
                         </div>
 
-                        {/* Deskripsi */}
-                        <p className="mb-6 text-sm text-gray-700">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ultrices luctus purus, vitae tincidunt justo ultricies
-                            vel. Curabitur sodales porttitor dui nec mollis. Sed efficitur pretium leo, ac congue nibh pellentesque quis. Nullam
-                            venenatis malesuada efficitur. Vestibulum ullamcorper ut purus vitae tincidunt. Maecenas mollis neque pulvinar nulla
-                            congue pulvinar. Vestibulum sit amet arcu ante. Morbi ullamcorper ipsum at interdum semper. Morbi posuere fringilla
-                            turpis, vel accumsan ex varius et. Nulla facilisi.
-                        </p>
+                        <div className="p-6">
+                            {/* Detail Utama */}
+                            <div className="mb-6 flex flex-col gap-4 border-b pb-6 md:flex-row md:items-center md:justify-between dark:border-gray-600">
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                                        <Calendar className="h-5 w-5 flex-shrink-0 text-indigo-500" />
+                                        <span>{formatDate(event.start_date)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                                        <MapPin className="h-5 w-5 flex-shrink-0 text-indigo-500" />
+                                        <span>Lokasi Acara (Contoh)</span>
+                                    </div>
+                                </div>
+                                <div className="w-full flex-shrink-0 rounded-md bg-indigo-100 p-3 text-center text-xl font-bold text-indigo-700 md:w-auto dark:bg-indigo-900/50 dark:text-indigo-300">
+                                    {formatPrice(event.price)}
+                                </div>
+                            </div>
 
-                        {/* Harga & Tombol */}
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <a
-                                href="https://wa.me/6281234567890"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex w-fit items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-green-600"
-                            >
-                                <Phone className="h-4 w-4" />
-                                <span>Hubungi via WhatsApp</span>
-                            </a>
-                            <div className="w-fit rounded-md bg-green-100 px-4 py-2 text-lg font-semibold text-green-700">{formatPrice(price)}</div>
+                            {/* Deskripsi */}
+                            <div className="prose prose-gray dark:prose-invert max-w-none">
+                                <h2 className="text-xl font-semibold">Tentang Acara Ini</h2>
+                                <p>{event.description}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
