@@ -72,20 +72,18 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $rules = [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => ['required', new Enum(ThreadCategory::class)],
-            'contact_name' => 'required|string|max:100',
-            'phone_number' => 'required|string|max:20',
         ];
 
         if ($request->input('category') === ThreadCategory::LOST_ITEMS->value) {
             $rules['images'] = 'required|array';
             $rules['images.*'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
-        } else {
-            $rules['images'] = 'nullable|array';
-            $rules['images.*'] = 'image|mimes:jpeg,png,jpg,gif|max:2048';
+            $rules['contact_name'] = 'required|string|max:100';
+            $rules['phone_number'] = 'required|string|max:20';
         }
 
         $validatedData = $request->validate($rules);
@@ -109,7 +107,9 @@ class ThreadController extends Controller
         // conditional redirect
         if ($category === ThreadCategory::STUDY->value) {
             return redirect()
-                ->route('studies.index', ThreadCategory::STUDY->value)
+                ->route('threads.index', [
+                    'category' => ThreadCategory::STUDY->value,
+                    ])
                 ->with('success', 'Thread created.');
 
             // development
@@ -121,8 +121,8 @@ class ThreadController extends Controller
         } elseif ($category === ThreadCategory::LOST_ITEMS->value) {
             return redirect()
                 ->route('threads.index', [
-                    'category' => ThreadCategory::LOST_ITEMS->value
-                ])
+                    'category' => ThreadCategory::LOST_ITEMS->value,
+                    ])
                 ->with('success', 'Thread created.');
 
             // development

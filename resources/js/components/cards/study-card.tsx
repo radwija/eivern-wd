@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { Thread } from '@/types';
 import { MessageCircleMore, Send } from 'lucide-react';
 import React, { useState } from 'react';
+import { useForm } from '@inertiajs/react';
 
 interface User {
     name: string;
@@ -135,7 +136,20 @@ const StudyCard: React.FC<{ study: Study; onCommentIconClick: () => void }> = ({
     );
 };
 
-const CommentSection: React.FC<{ comments: Comment[] }> = ({ comments }) => {
+const CommentSection: React.FC<{ thread: Study }> = ({ thread }) => {
+    console.log(thread);
+    const { data, setData, post, processing, errors, reset } = useForm({
+        message: '',
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(route('comments.comment', thread.id), {
+            preserveScroll: true,
+            onSuccess: () => reset('message'),
+        });
+    };
+
     return (
         <>
             <SheetHeader className="p-6">
@@ -144,7 +158,7 @@ const CommentSection: React.FC<{ comments: Comment[] }> = ({ comments }) => {
             </SheetHeader>
             <div className="flex-1 overflow-y-auto px-6 py-2">
                 <div className="space-y-6">
-                    {comments.map((comment) => (
+                    {thread.comments.map((comment) => (
                         <div key={comment.id} className="flex items-start gap-4">
                             <UserAvatar user={comment.user} />
                             <div className="flex-1 space-y-3 rounded-lg bg-gray-100 p-4 sm:space-y-0 dark:bg-gray-700">
@@ -159,12 +173,21 @@ const CommentSection: React.FC<{ comments: Comment[] }> = ({ comments }) => {
                 </div>
             </div>
             <div className="border-t bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-                <div className="flex gap-2">
-                    <Input placeholder="Tulis komentar..." />
-                    <Button>
-                        <Send />
-                    </Button>
-                </div>
+                <form onSubmit={handleSubmit} className="border-t bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+                    <div className="flex gap-2">
+                        <Input
+                            placeholder="Tulis komentar..."
+                            value={data.message}
+                            onChange={(e) => setData('message', e.target.value)}
+                            disabled={processing}
+                        />
+                        <Button type="submit" disabled={processing}>
+                            <Send />
+                        </Button>
+                    </div>
+                    {/* Opsional: Tampilkan error validasi */}
+                    {errors.message && <p className="mt-2 text-xs text-red-500">{errors.message}</p>}
+                </form>
             </div>
         </>
     );
@@ -178,7 +201,7 @@ export const StudyCardWithComments: React.FC<{ study: Study }> = ({ study }) => 
             <StudyCard study={study} onCommentIconClick={() => setIsCommentSectionOpen(true)} />
             <Sheet open={isCommentSectionOpen} onOpenChange={setIsCommentSectionOpen}>
                 <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-lg">
-                    <CommentSection comments={study.comments} />
+                    <CommentSection thread={study} />
                 </SheetContent>
             </Sheet>
         </>
