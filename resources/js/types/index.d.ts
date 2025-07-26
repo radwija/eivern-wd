@@ -1,3 +1,5 @@
+import { UserRoleEnum } from '@/enums/enum';
+import { PageProps } from '@inertiajs/core';
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
@@ -116,4 +118,17 @@ export interface Message {
     created_at: string;
     updated_at: string;
     [key: string]: unknown;
+}
+
+export interface AuthUser {
+    id: number;
+    name: string;
+    email: string;
+    role: UserRoleEnum;
+}
+
+export interface InertiaPageProps extends PageProps {
+    auth: {
+        user: AuthUser;
+    };
 }
