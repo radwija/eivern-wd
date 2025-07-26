@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('title');
             $table->foreignId('organizer_id')->constrained('users');
             $table->text('description');
-            $table->date('date');
+            $table->string('image');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }
