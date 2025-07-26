@@ -135,7 +135,7 @@ const Index = ({ threads }: { threads: Thread[] }) => {
 
     console.log(threads);
 
-    const breadcrumbs: BreadcrumbItem[] = [{ title: 'Studies', href: route('studies.index') }];
+    const breadcrumbs: BreadcrumbItem[] = [{ title: 'Studies', href: route('threads.create', { category: 'study' }) }];
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Studies" />
@@ -146,7 +146,7 @@ const Index = ({ threads }: { threads: Thread[] }) => {
                         description={'View the complete list of Studies.'}
                         action={
                             <div className="flex gap-2">
-                                <LinkButton href={route('studies.create')} variant="default" size="default" className="mb-2 lg:mb-0">
+                                <LinkButton href={route('threads.create', { category: 'study' })} variant="default" size="default" className="mb-2 lg:mb-0">
                                     <Plus />
                                     Create Post
                                 </LinkButton>

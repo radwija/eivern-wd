@@ -20,6 +20,7 @@ const Create = () => {
         description: '',
         phone_number: '',
         image: '',
+        category: 'study',
     });
 
     const [file, setFile] = useState<File | null>(null);
@@ -28,82 +29,18 @@ const Create = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState('');
 
-    const handleImageClick = (url: string) => {
-        setSelectedImage(url);
-    };
-    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0];
-        if (!selectedFile) return;
-
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            const result = reader.result;
-            if (typeof result === 'string') {
-                setPreviewUrl(result);
-                setData('image', result);
-            }
-        };
-        reader.readAsDataURL(selectedFile);
-    };
-
-    const handleRemoveImage = () => {
-        setFile(null);
-        setFileName('');
-        setPreviewUrl(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
+    const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    post(route('threads.store'));
+};
 
     return (
         <main>
             <Head title="Create Lost Item" />
             <div className="flex h-screen items-center justify-center">
-                <form>
+                <form onSubmit={handleSubmit} >
                     <h1 className="text-2xl font-bold">Create Study Thread</h1>
-                    {previewUrl && (
-                        <div className="space-y-2">
-                            <Label htmlFor="image">{'Preview'}</Label>
-                            <div className="relative max-w-[12rem] space-y-2">
-                                <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="w-full cursor-pointer rounded-md object-cover"
-                                    onClick={() => handleImageClick(previewUrl)}
-                                />
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    className="absolute top-2 right-2 cursor-pointer"
-                                    onClick={handleRemoveImage}
-                                >
-                                    <Trash2 />
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                    <div className="col-span-2 space-y-2">
-                        <Label htmlFor="image">Image</Label>
-                        <label className="flex h-fit cursor-pointer items-center gap-2 truncate rounded-md border border-gray-300 px-4 py-2.5 hover:bg-gray-100 lg:max-w-[36rem] dark:hover:bg-zinc-900">
-                            <UploadCloud className="h-5 w-5 dark:text-white" />
-                            <span className="text-sm dark:text-white"> {fileName ? fileName : 'Choose image file'}</span>
-                            <input
-                                id="image"
-                                type="file"
-                                accept="image/png, image/gif, image/jpeg, image/jpg"
-                                className="hidden"
-                                required
-                                ref={fileInputRef}
-                                onChange={handleFile}
-                            />
-                        </label>
-                        <InputError message={errors.image} />
-                    </div>
-
+            
                     <FormField
                         type="text"
                         placeholder="Input the title"
